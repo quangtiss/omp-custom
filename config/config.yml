@@ -1,0 +1,55 @@
+theme:
+  dark: dark-github-user-highlight-custom
+  light: light
+symbolPreset: unicode
+composer:
+  shape: box
+  tokenRate: false
+modelRoles:
+  default: deepinfra/deepseek-ai/DeepSeek-V4.1-Flash-1017
+  task: vector/cc/claude-fable-5-1
+  smol: vector/cc/claude-haiku-4-5-20251001
+  image: openrouter/google/gemini-3-pro-image
+task:
+  maxConcurrency: 4
+  completionProbe: false
+title:
+  generator: tiny
+recap:
+  enabled: false
+tools:
+  approvalMode: yolo
+git:
+  enabled: true
+statusLine:
+  preset: default
+  separator: powerline
+  leftSegments:
+    - vim
+    - model
+    - mode
+    - path
+    - pr
+  compactThinkingLevel: false
+  segmentOptions:
+    path:
+      abbreviate: true
+      maxLength: 200
+      stripWorkPrefix: false
+    git:
+      showBranch: true
+      showStaged: true
+      showUnstaged: true
+      showUntracked: true
+display:
+  collapseCompacted: false
+  showTokenUsage: true
+tui:
+  mouse: false
+  imeSafeCursor: false
+  tight: false
+colorBlindMode: true
+defaultThinkingLevel: low
+setupVersion: 3
+update:
+  auto: false

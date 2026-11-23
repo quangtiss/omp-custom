@@ -1,0 +1,256 @@
+{
+  "providers": {
+    "vector": {
+      "baseUrl": "https://vector.local/v1",
+      "api": "openai-completions",
+      "apiKey": "PASTE_VECTOR_API_KEY_HERE",
+      "models": [
+        {
+          "id": "cc/claude-opus-5-5",
+          "cost": {
+            "input": 4,
+            "output": 20,
+            "cacheRead": 0.2,
+            "cacheWrite": 5
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "anthropic-messages",
+          "reasoning": true,
+          "name": "Claude Opus 5.5",
+          "baseUrl": "https://vector.local",
+          "contextWindow": 372000
+        },
+        {
+          "id": "cc/claude-sonnet-5-5",
+          "cost": {
+            "input": 2,
+            "output": 10,
+            "cacheRead": 0.2,
+            "cacheWrite": 2.5
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "anthropic-messages",
+          "reasoning": true,
+          "name": "Claude Sonnet 5.5",
+          "baseUrl": "https://vector.local",
+          "contextWindow": 372000
+        },
+        {
+          "id": "cc/claude-sonnet-5",
+          "cost": {
+            "input": 2,
+            "output": 10,
+            "cacheRead": 0.2,
+            "cacheWrite": 2.5
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "anthropic-messages",
+          "reasoning": true,
+          "name": "Claude Sonnet 5",
+          "baseUrl": "https://vector.local",
+          "contextWindow": 372000
+        },
+        {
+          "id": "cc/claude-fable-5-1",
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cacheRead": 0.25,
+            "cacheWrite": 12.5
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "anthropic-messages",
+          "reasoning": true,
+          "name": "Claude Fable 5.1",
+          "baseUrl": "https://vector.local",
+          "contextWindow": 372000
+        },
+        {
+          "id": "cc/claude-haiku-4-5-20251001",
+          "cost": {
+            "input": 1,
+            "output": 5,
+            "cacheRead": 0.1,
+            "cacheWrite": 1.25
+          },
+          "maxTokens": 64000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "anthropic-messages",
+          "reasoning": true,
+          "name": "Claude Haiku 4.5",
+          "baseUrl": "https://vector.local",
+          "contextWindow": 200000
+        },
+        {
+          "id": "cx/gpt-6-astra",
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cacheRead": 1,
+            "cacheWrite": 12.5,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 20,
+                "output": 75,
+                "cacheRead": 2,
+                "cacheWrite": 25
+              }
+            ]
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "openai-responses",
+          "reasoning": true,
+          "name": "GPT-6 Astra",
+          "baseUrl": "https://vector.local/v1",
+          "contextWindow": 272000
+        },
+        {
+          "id": "cx/gpt-6-sol",
+          "cost": {
+            "input": 2,
+            "output": 10,
+            "cacheRead": 0.2,
+            "cacheWrite": 2.5,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 4,
+                "output": 15,
+                "cacheRead": 0.4,
+                "cacheWrite": 5
+              }
+            ]
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "openai-responses",
+          "reasoning": true,
+          "name": "GPT-6 Sol",
+          "baseUrl": "https://vector.local/v1",
+          "contextWindow": 272000
+        },
+        {
+          "id": "cx/gpt-6-luna",
+          "cost": {
+            "input": 0.1,
+            "output": 0.5,
+            "cacheRead": 0.01,
+            "cacheWrite": 0.125,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 0.2,
+                "output": 0.75,
+                "cacheRead": 0.02,
+                "cacheWrite": 0.25
+              }
+            ]
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "openai-responses",
+          "reasoning": true,
+          "name": "GPT-6 Luna",
+          "baseUrl": "https://vector.local/v1",
+          "contextWindow": 272000
+        },
+        {
+          "id": "cx/gpt-5.6-luna",
+          "cost": {
+            "input": 0.2,
+            "output": 1.2,
+            "cacheRead": 0.02,
+            "cacheWrite": 0.25,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 0.4,
+                "output": 1.8,
+                "cacheRead": 0.04,
+                "cacheWrite": 0.5
+              }
+            ]
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "openai-responses",
+          "reasoning": true,
+          "name": "GPT-5.6 Luna",
+          "baseUrl": "https://vector.local/v1",
+          "contextWindow": 272000
+        },
+        {
+          "id": "oc/deepseek-v4.1-flash",
+          "cost": {
+            "input": 0.15,
+            "output": 0.6,
+            "cacheRead": 0.003,
+            "cacheWrite": 0
+          },
+          "maxTokens": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "openai-completions",
+          "reasoning": true,
+          "name": "DeepSeek V4.1 Flash",
+          "baseUrl": "https://vector.local/v1",
+          "contextWindow": 372000
+        },
+        {
+          "id": "oc/mimo-v2.6-flash",
+          "cost": {
+            "input": 0.14,
+            "output": 0.28,
+            "cacheRead": 0.0028,
+            "cacheWrite": 0
+          },
+          "maxTokens": 131072,
+          "input": [
+            "text",
+            "image"
+          ],
+          "api": "openai-completions",
+          "reasoning": true,
+          "name": "MiMo V2.6 Flash",
+          "baseUrl": "https://vector.local/v1",
+          "contextWindow": 372000
+        }
+      ]
+    }
+  }
+}
