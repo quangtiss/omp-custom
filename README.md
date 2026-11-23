@@ -32,10 +32,10 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 2. Khôi phục đăng nhập provider (không nằm trong repo). Chọn một cách:
    - Máy cũ: `omp auth export > omp-credentials.json` (giữ file bí mật, đừng commit), máy mới: `omp auth import omp-credentials.json`.
    - Hoặc đăng nhập lại trong omp; riêng `omniroute` sẽ hỏi API key khi login.
-3. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`.
+3. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`. Tùy chọn cài `skillspector` để quét bảo mật.
 4. Chạy `omp`.
 
-## Extension & skill đã cài
+## Extension, skill & công cụ
 
 | Thành phần | Loại | Upstream | Tác dụng | Cần cài ngoài |
 |---|---|---|---|---|
@@ -43,6 +43,7 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 | `cli-anything/` | extension | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Slash command `/cli-anything` xây CLI harness cho app GUI | — |
 | `sources/ponytail/` | extension + skill | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode, `/ponytail*` | — |
 | `skills/graphify/` | skill | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | `/graphify` dựng knowledge graph từ code/docs | CLI `graphifyy` (`uv tool install graphifyy`) |
+| `skillspector` | CLI (ngoài repo) | [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector) | Quét bảo mật skill/extension trước khi cài hoặc sau khi nâng cấp | `uv tool install git+https://github.com/NVIDIA/SkillSpector.git` |
 | `omniroute.ts` | extension | nội bộ | Provider model qua omniroute local (`127.0.0.1:20128`) | OmniRoute đang chạy |
 | `herdr-omp-agent-state.ts` | extension | herdr sinh tự động | Báo trạng thái agent cho herdr | herdr |
 
@@ -69,6 +70,17 @@ Không có trong repo: session, history, credential, database (`agent.db`, `mode
 - `config/models.yml` chỉ chứa placeholder; không commit key thật.
 - Credential do omp quản lý trong agent dir/keychain, không nằm trong repo này.
 - Trước khi push, kiểm tra `git diff` nếu vừa sửa file cấu hình.
+
+### Quét skill/extension bằng SkillSpector
+
+```sh
+uv tool install git+https://github.com/NVIDIA/SkillSpector.git
+skillspector scan extensions/cli-anything --no-llm
+skillspector scan skills/graphify --no-llm
+skillspector scan sources/ponytail --no-llm
+```
+
+Mặc định là static scan (`--no-llm`). Finding có thể false positive với skill chứa instruction cho agent; đọc kỹ trước khi kết luận. Quét lại sau mỗi lần nâng cấp asset từ upstream.
 
 ## Cập nhật cấu hình
 
