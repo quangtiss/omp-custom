@@ -11,8 +11,8 @@ computer:
   maxWidth: 3840
   maxHeight: 2400
 extensions:
-  - ~/.omp/agent/extensions/omniroute.ts
-  - ~/.omp/agent/extensions/cli-anything
+  # omniroute.ts, rtk.ts, herdr-*, cli-anything/ live in <agent-dir>/extensions
+  # and are auto-discovered; only sources outside that dir need an entry here.
   - ~/.omp/sources/ponytail
 modelRoles:
   default: deepinfra/deepseek-ai/DeepSeek-V4.1-Flash-1017
@@ -31,14 +31,20 @@ tools:
 git:
   enabled: true
 statusLine:
-  preset: default
+  preset: custom
   separator: powerline
   leftSegments:
     - vim
     - model
     - mode
     - path
+    - git
     - pr
+  rightSegments:
+    - session_name
+    - token_total
+    - cost
+    - context_pct
   compactThinkingLevel: false
   segmentOptions:
     path:
