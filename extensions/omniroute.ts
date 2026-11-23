@@ -59,7 +59,8 @@ function toModelConfig(row: unknown): ApiModelConfig | undefined {
 	const reasoning = read(capabilities, "reasoning") === true || read(row, "reasoning") === true;
 	return {
 		id,
-		name: `OmniRoute · ${firstString(read(row, "name")) ?? id}`,
+		// Status line and pickers print this verbatim; keep the provider/model path intact.
+		name: `${PROVIDER_ID}/${id}`,
 		api: "openai-completions",
 		input: vision ? ["text", "image"] : ["text"],
 		cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },

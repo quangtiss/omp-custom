@@ -89,14 +89,6 @@ try {
         Write-Host "Previous files backed up to: $BackupDir"
     }
 
-    $modelsPath = Join-Path $AgentDir "models.yml"
-    if (Select-String -Path $modelsPath -Pattern "PASTE_VECTOR_API_KEY_HERE" -Quiet) {
-        Write-Host ""
-        Write-Host "Note: provider 'vector' in $modelsPath still uses the API key placeholder."
-        Write-Host "Replace PASTE_VECTOR_API_KEY_HERE with your key, then start omp."
-        Write-Host "Do not commit a real key to the repo."
-    }
-
     Write-Host "Done. Run 'omp' to verify."
 }
 finally {

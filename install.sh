@@ -122,11 +122,4 @@ if [ -d "$BACKUP_DIR" ]; then
   echo "Bản cũ đã sao lưu tại: $BACKUP_DIR"
 fi
 
-if grep -q 'PASTE_VECTOR_API_KEY_HERE' "$AGENT_DIR/models.yml" 2>/dev/null; then
-  echo
-  echo "Lưu ý: provider 'vector' trong $AGENT_DIR/models.yml đang dùng API key placeholder."
-  echo "Mở file đó, thay PASTE_VECTOR_API_KEY_HERE bằng key thật rồi khởi động omp."
-  echo "Không commit key thật vào repo."
-fi
-
 echo "Xong. Chạy 'omp' để kiểm tra."

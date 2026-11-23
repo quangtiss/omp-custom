@@ -16,8 +16,8 @@ extensions:
   - ~/.omp/sources/ponytail
 modelRoles:
   default: deepinfra/deepseek-ai/DeepSeek-V4.1-Flash-1017
-  task: vector/cc/claude-fable-5-1
-  smol: vector/cc/claude-haiku-4-5-20251001
+  task: omniroute/kc/anthropic/claude-fable-5.1
+  smol: omniroute/kc/anthropic/claude-haiku-4.5
   image: openrouter/google/gemini-3-pro-image
 task:
   maxConcurrency: 4

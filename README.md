@@ -28,12 +28,11 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 
 ## Sau khi cài
 
-1. Mở `<agent-dir>/models.yml`, thay `PASTE_VECTOR_API_KEY_HERE` bằng API key của provider `vector`.
-2. Khôi phục đăng nhập provider (không nằm trong repo). Chọn một cách:
+1. Khôi phục đăng nhập provider (không nằm trong repo). Chọn một cách:
    - Máy cũ: `omp auth export > omp-credentials.json` (giữ file bí mật, đừng commit), máy mới: `omp auth import omp-credentials.json`.
    - Hoặc đăng nhập lại trong omp; riêng `omniroute` sẽ hỏi API key khi login.
-3. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`. Tùy chọn cài `skillspector` để quét bảo mật.
-4. Chạy `omp`.
+2. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`. Tùy chọn cài `skillspector` để quét bảo mật.
+3. Chạy `omp`.
 
 ## Extension, skill & công cụ
 
@@ -54,7 +53,7 @@ Phiên bản/commit đã pin: xem [VERSIONS.md](VERSIONS.md). Đây là bản ve
 | Đường dẫn trong repo | Đích trên máy | Nội dung |
 |---|---|---|
 | `config/config.yml` | `<agent-dir>/config.yml` | Theme, status line, model roles, computer use, extension entries, approval mode, TUI |
-| `config/models.yml` | `<agent-dir>/models.yml` | Provider/model tùy chỉnh (`vector`, API key là placeholder) |
+| `config/models.yml` | `<agent-dir>/models.yml` | Provider/model tùy chỉnh (hiện rỗng) |
 | `config/mcp.json` | `<agent-dir>/mcp.json` | MCP servers (hiện rỗng) |
 | `extensions/*.ts` | `<agent-dir>/extensions/` | `omniroute`, `rtk`, `herdr` |
 | `extensions/cli-anything/` | `<agent-dir>/extensions/cli-anything/` | CLI-Anything plugin + assets |
@@ -67,7 +66,7 @@ Không có trong repo: session, history, credential, database (`agent.db`, `mode
 
 ## Bảo mật
 
-- `config/models.yml` chỉ chứa placeholder; không commit key thật.
+- `config/models.yml` hiện không chứa provider hay key nào.
 - Credential do omp quản lý trong agent dir/keychain, không nằm trong repo này.
 - Trước khi push, kiểm tra `git diff` nếu vừa sửa file cấu hình.
 
