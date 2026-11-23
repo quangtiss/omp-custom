@@ -137,7 +137,12 @@ if [ -z "${OMP_CUSTOM_SKIP_DEPS:-}" ]; then
     echo "graphifyy: đã có"
   elif command -v uv >/dev/null 2>&1; then
     echo "Đang cài graphifyy (skill /graphify)..."
-    uv tool install graphifyy || echo "Cài graphifyy thất bại — chạy tay: uv tool install graphifyy"
+    if uv tool install graphifyy; then
+      command -v graphify >/dev/null 2>&1 || \
+        echo "Đã cài nhưng '$HOME/.local/bin' chưa có trong PATH — thêm vào rồi mở terminal mới."
+    else
+      echo "Cài graphifyy thất bại — chạy tay: uv tool install graphifyy"
+    fi
   else
     echo "Thiếu graphifyy: cài bằng 'uv tool install graphifyy' (https://docs.astral.sh/uv/)"
   fi
