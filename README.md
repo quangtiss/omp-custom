@@ -1,6 +1,6 @@
 # omp-custom
 
-Cấu hình [omp](https://github.com/can1357/oh-my-pi) (oh-my-pi) của tôi: theme, status line, model, extension. Mục đích: máy mới, hệ điều hành nào cũng chỉ cần một lệnh là có lại môi trường quen dùng — kể cả khi chưa cài omp.
+Cấu hình [omp](https://github.com/can1357/oh-my-pi) (oh-my-pi) của tôi: theme, status line, model, extension và skill. Mục đích: máy mới, hệ điều hành nào cũng chỉ cần một lệnh là có lại môi trường quen dùng — kể cả khi chưa cài omp.
 
 ## Cài một lệnh
 
@@ -24,7 +24,7 @@ cd omp-custom
 ./install.sh          # Windows: .\install.ps1
 ```
 
-Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc `install.ps1`) nếu máy chưa có, rồi chép cấu hình vào `${OMP_AGENT_DIR:-${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}}`. File cũ được sao lưu vào `<agent-dir>/backups/<timestamp>/` trước khi ghi đè.
+Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc `install.ps1`) nếu máy chưa có, rồi chép cấu hình, extension, skill vào `${OMP_AGENT_DIR:-${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}}` và plugin vào `~/.omp/sources`. File cũ được sao lưu vào `<agent-dir>/backups/<timestamp>/` trước khi ghi đè.
 
 ## Sau khi cài
 
@@ -32,19 +32,35 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 2. Khôi phục đăng nhập provider (không nằm trong repo). Chọn một cách:
    - Máy cũ: `omp auth export > omp-credentials.json` (giữ file bí mật, đừng commit), máy mới: `omp auth import omp-credentials.json`.
    - Hoặc đăng nhập lại trong omp; riêng `omniroute` sẽ hỏi API key khi login.
-3. Chạy `omp`.
+3. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`.
+4. Chạy `omp`.
+
+## Extension & skill đã cài
+
+| Thành phần | Loại | Upstream | Tác dụng | Cần cài ngoài |
+|---|---|---|---|---|
+| `rtk.ts` | extension | [rtk-ai/rtk](https://github.com/rtk-ai/rtk) | Viết lại lệnh bash sang `rtk` để giảm token | `rtk` ≥ 0.23.0 trong PATH (`brew install rtk`) |
+| `cli-anything/` | extension | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Slash command `/cli-anything` xây CLI harness cho app GUI | — |
+| `sources/ponytail/` | extension + skill | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode, `/ponytail*` | — |
+| `skills/graphify/` | skill | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | `/graphify` dựng knowledge graph từ code/docs | CLI `graphifyy` (`uv tool install graphifyy`) |
+| `omniroute.ts` | extension | nội bộ | Provider model qua omniroute local (`127.0.0.1:20128`) | OmniRoute đang chạy |
+| `herdr-omp-agent-state.ts` | extension | herdr sinh tự động | Báo trạng thái agent cho herdr | herdr |
+
+Phiên bản/commit đã pin: xem [VERSIONS.md](VERSIONS.md). Đây là bản vendor một phần asset cần thiết (không kèm test/example); muốn bản đầy đủ thì cài từ upstream.
 
 ## Repo chứa gì
 
 | Đường dẫn trong repo | Đích trên máy | Nội dung |
 |---|---|---|
-| `config/config.yml` | `<agent-dir>/config.yml` | Theme, status line, model roles, approval mode, TUI |
+| `config/config.yml` | `<agent-dir>/config.yml` | Theme, status line, model roles, computer use, extension entries, approval mode, TUI |
 | `config/models.yml` | `<agent-dir>/models.yml` | Provider/model tùy chỉnh (`vector`, API key là placeholder) |
 | `config/mcp.json` | `<agent-dir>/mcp.json` | MCP servers (hiện rỗng) |
-| `extensions/omniroute.ts` | `<agent-dir>/extensions/` | Provider động cho omniroute (`127.0.0.1:20128`) |
-| `extensions/herdr-omp-agent-state.ts` | `<agent-dir>/extensions/` | Báo trạng thái agent cho herdr; herdr tự ghi đè khi cài lại |
+| `extensions/*.ts` | `<agent-dir>/extensions/` | `omniroute`, `rtk`, `herdr` |
+| `extensions/cli-anything/` | `<agent-dir>/extensions/cli-anything/` | CLI-Anything plugin + assets |
+| `skills/graphify/` | `<agent-dir>/skills/graphify/` | Graphify skill |
+| `sources/ponytail/` | `~/.omp/sources/ponytail/` | Ponytail plugin + skill (bản rút gọn) |
 | `themes/dark-github-user-highlight-custom.json` | `<agent-dir>/themes/` | Theme tùy chỉnh |
-| `install.sh` / `install.ps1` | — | Cài omp + cấu hình trên macOS/Linux và Windows |
+| `install.sh` / `install.ps1` | — | Cài omp + toàn bộ cấu hình trên macOS/Linux và Windows |
 
 Không có trong repo: session, history, credential, database (`agent.db`, `models.db`, ...) và API key thật.
 
@@ -58,9 +74,10 @@ Không có trong repo: session, history, credential, database (`agent.db`, `mode
 
 - Sửa trong repo rồi chạy lại `./install.sh` (hoặc `.\install.ps1` trên Windows), hoặc
 - Sửa trong agent dir, rồi copy ngược file tương ứng vào repo và commit.
+- Nâng cấp extension/skill: chạy theo hướng dẫn upstream, copy lại asset vào repo, cập nhật `VERSIONS.md`.
 
 ## Ghi chú
 
-- Không hard-code đường dẫn tuyệt đối hay home directory; `config.yml` dùng auto-discovery cho `extensions/`.
-- Extension `herdr-omp-agent-state.ts` chỉ hoạt động khi chạy trong herdr; không dùng herdr thì bỏ qua được.
+- Không hard-code đường dẫn tuyệt đối hay home directory; các entry trong `config.yml` dùng `~`, extension top-level tự được auto-discovery.
+- `extensions/herdr-omp-agent-state.ts` chỉ hoạt động khi chạy trong herdr; không dùng herdr thì bỏ qua được.
 - Cần `curl` và `tar` trên macOS/Linux; PowerShell trên Windows.
