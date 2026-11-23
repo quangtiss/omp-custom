@@ -8,11 +8,11 @@ $Ref = "main"
 
 $AgentDir = if ($env:OMP_AGENT_DIR) { $env:OMP_AGENT_DIR }
             elseif ($env:PI_CODING_AGENT_DIR) { $env:PI_CODING_AGENT_DIR }
-            else { Join-Path $HOME ".omp\agent" }
+            else { Join-Path $HOME ".omp/agent" }
 
 $DownloadedDir = $null
 function Get-RepoDir {
-    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "config\config.yml"))) {
+    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "config/config.yml"))) {
         return $PSScriptRoot
     }
     $tmp = Join-Path ([IO.Path]::GetTempPath()) ("omp-custom-" + [guid]::NewGuid().ToString("N"))
@@ -53,19 +53,19 @@ try {
         throw "omp is still not on PATH. Open a new terminal and run this script again."
     }
 
-    $BackupDir = Join-Path $AgentDir ("backups\" + (Get-Date -Format "yyyyMMdd-HHmmss"))
+    $BackupDir = Join-Path (Join-Path $AgentDir "backups") (Get-Date -Format "yyyyMMdd-HHmmss")
     New-Item -ItemType Directory -Force -Path (Join-Path $AgentDir "extensions") | Out-Null
     New-Item -ItemType Directory -Force -Path (Join-Path $AgentDir "themes") | Out-Null
 
-    Install-File (Join-Path $RepoDir "config\config.yml") "config.yml"
-    Install-File (Join-Path $RepoDir "config\models.yml") "models.yml"
-    Install-File (Join-Path $RepoDir "config\mcp.json") "mcp.json"
+    Install-File (Join-Path $RepoDir "config/config.yml") "config.yml"
+    Install-File (Join-Path $RepoDir "config/models.yml") "models.yml"
+    Install-File (Join-Path $RepoDir "config/mcp.json") "mcp.json"
 
     Get-ChildItem -Path (Join-Path $RepoDir "extensions") -Filter *.ts | ForEach-Object {
-        Install-File $_.FullName ("extensions\" + $_.Name)
+        Install-File $_.FullName ("extensions/" + $_.Name)
     }
     Get-ChildItem -Path (Join-Path $RepoDir "themes") -Filter *.json | ForEach-Object {
-        Install-File $_.FullName ("themes\" + $_.Name)
+        Install-File $_.FullName ("themes/" + $_.Name)
     }
 
     if (Test-Path $BackupDir) {
