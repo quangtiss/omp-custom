@@ -9,6 +9,7 @@ $Ref = "main"
 $AgentDir = if ($env:OMP_AGENT_DIR) { $env:OMP_AGENT_DIR }
             elseif ($env:PI_CODING_AGENT_DIR) { $env:PI_CODING_AGENT_DIR }
             else { Join-Path $HOME ".omp/agent" }
+$SourcesDir = Join-Path $HOME ".omp/sources"
 
 $DownloadedDir = $null
 function Get-RepoDir {
@@ -27,17 +28,23 @@ function Get-RepoDir {
     return $repo.FullName
 }
 
-function Install-File([string]$Source, [string]$Rel) {
-    $dest = Join-Path $AgentDir $Rel
-    if ((Test-Path $dest) -and ((Get-FileHash $dest).Hash -ne (Get-FileHash $Source).Hash)) {
+function Install-File([string]$Source, [string]$Dest, [string]$Rel) {
+    if ((Test-Path $Dest) -and ((Get-FileHash $Dest).Hash -ne (Get-FileHash $Source).Hash)) {
         $backupPath = Join-Path $BackupDir $Rel
         New-Item -ItemType Directory -Force -Path (Split-Path $backupPath) | Out-Null
-        Copy-Item -Force $dest $backupPath
+        Copy-Item -Force $Dest $backupPath
         Write-Host "backup:    $Rel"
     }
-    New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-    Copy-Item -Force $Source $dest
+    New-Item -ItemType Directory -Force -Path (Split-Path $Dest) | Out-Null
+    Copy-Item -Force $Source $Dest
     Write-Host "installed: $Rel"
+}
+
+function Install-Tree([string]$SourceRoot, [string]$DestRoot, [string]$RelPrefix) {
+    Get-ChildItem -Path $SourceRoot -File -Recurse -Force | ForEach-Object {
+        $rel = $_.FullName.Substring($SourceRoot.Length).TrimStart([char[]]@('\', '/'))
+        Install-File $_.FullName (Join-Path $DestRoot $rel) (($RelPrefix + '/' + $rel) -replace '\\', '/')
+    }
 }
 
 try {
@@ -57,15 +64,25 @@ try {
     New-Item -ItemType Directory -Force -Path (Join-Path $AgentDir "extensions") | Out-Null
     New-Item -ItemType Directory -Force -Path (Join-Path $AgentDir "themes") | Out-Null
 
-    Install-File (Join-Path $RepoDir "config/config.yml") "config.yml"
-    Install-File (Join-Path $RepoDir "config/models.yml") "models.yml"
-    Install-File (Join-Path $RepoDir "config/mcp.json") "mcp.json"
+    Install-File (Join-Path $RepoDir "config/config.yml") (Join-Path $AgentDir "config.yml") "config.yml"
+    Install-File (Join-Path $RepoDir "config/models.yml") (Join-Path $AgentDir "models.yml") "models.yml"
+    Install-File (Join-Path $RepoDir "config/mcp.json") (Join-Path $AgentDir "mcp.json") "mcp.json"
 
-    Get-ChildItem -Path (Join-Path $RepoDir "extensions") -Filter *.ts | ForEach-Object {
-        Install-File $_.FullName ("extensions/" + $_.Name)
+    Get-ChildItem -Path (Join-Path $RepoDir "extensions") | ForEach-Object {
+        $rel = "extensions/" + $_.Name
+        if ($_.PSIsContainer) {
+            Install-Tree $_.FullName (Join-Path $AgentDir $rel) $rel
+        } else {
+            Install-File $_.FullName (Join-Path $AgentDir $rel) $rel
+        }
     }
+
+    Install-Tree (Join-Path $RepoDir "skills") (Join-Path $AgentDir "skills") "skills"
+    Install-Tree (Join-Path $RepoDir "sources/ponytail") (Join-Path $SourcesDir "ponytail") "sources/ponytail"
+
     Get-ChildItem -Path (Join-Path $RepoDir "themes") -Filter *.json | ForEach-Object {
-        Install-File $_.FullName ("themes/" + $_.Name)
+        $rel = "themes/" + $_.Name
+        Install-File $_.FullName (Join-Path $AgentDir $rel) $rel
     }
 
     if (Test-Path $BackupDir) {

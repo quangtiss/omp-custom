@@ -60,6 +60,7 @@ fi
 
 # 3. Chép cấu hình vào agent dir.
 AGENT_DIR="${OMP_AGENT_DIR:-${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}}"
+SOURCES_DIR="$HOME/.omp/sources"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$AGENT_DIR/backups/$STAMP"
 
@@ -67,26 +68,52 @@ mkdir -p "$AGENT_DIR/extensions" "$AGENT_DIR/themes"
 
 install_file() {
   SRC="$1"
-  REL="$2"
-  DEST="$AGENT_DIR/$REL"
+  DEST="$2"
+  REL="$3"
   if [ -e "$DEST" ] && ! cmp -s "$SRC" "$DEST"; then
     mkdir -p "$BACKUP_DIR/$(dirname "$REL")"
     cp -p "$DEST" "$BACKUP_DIR/$REL"
     echo "backup:    $REL"
   fi
+  mkdir -p "$(dirname "$DEST")"
   cp "$SRC" "$DEST"
   echo "installed: $REL"
 }
 
-install_file "$REPO_DIR/config/config.yml" config.yml
-install_file "$REPO_DIR/config/models.yml" models.yml
-install_file "$REPO_DIR/config/mcp.json" mcp.json
+install_tree() {
+  SRC_ROOT="$1"
+  DEST_ROOT="$2"
+  PREFIX="$3"
+  find "$SRC_ROOT" -type f | while IFS= read -r f; do
+    rel="${f#"$SRC_ROOT"/}"
+    install_file "$f" "$DEST_ROOT/$rel" "$PREFIX/$rel"
+  done
+}
 
-for f in "$REPO_DIR"/extensions/*.ts; do
-  [ -e "$f" ] && install_file "$f" "extensions/$(basename "$f")"
+install_file "$REPO_DIR/config/config.yml" "$AGENT_DIR/config.yml" config.yml
+install_file "$REPO_DIR/config/models.yml" "$AGENT_DIR/models.yml" models.yml
+install_file "$REPO_DIR/config/mcp.json" "$AGENT_DIR/mcp.json" mcp.json
+
+for f in "$REPO_DIR"/extensions/*; do
+  [ -e "$f" ] || continue
+  name="$(basename "$f")"
+  if [ -d "$f" ]; then
+    install_tree "$f" "$AGENT_DIR/extensions/$name" "extensions/$name"
+  else
+    install_file "$f" "$AGENT_DIR/extensions/$name" "extensions/$name"
+  fi
 done
+
+if [ -d "$REPO_DIR/skills" ]; then
+  install_tree "$REPO_DIR/skills" "$AGENT_DIR/skills" skills
+fi
+
+if [ -d "$REPO_DIR/sources/ponytail" ]; then
+  install_tree "$REPO_DIR/sources/ponytail" "$SOURCES_DIR/ponytail" sources/ponytail
+fi
+
 for f in "$REPO_DIR"/themes/*.json; do
-  [ -e "$f" ] && install_file "$f" "themes/$(basename "$f")"
+  [ -e "$f" ] && install_file "$f" "$AGENT_DIR/themes/$(basename "$f")" "themes/$(basename "$f")"
 done
 
 chmod 600 "$AGENT_DIR/config.yml" "$AGENT_DIR/models.yml" 2>/dev/null || true
