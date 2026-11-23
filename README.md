@@ -53,7 +53,7 @@ Phiên bản/commit đã pin: xem [VERSIONS.md](VERSIONS.md). Đây là bản ve
 | Đường dẫn trong repo | Đích trên máy | Nội dung |
 |---|---|---|
 | `config/config.yml` | `<agent-dir>/config.yml` | Theme, status line, model roles, computer use, extension entries, approval mode, TUI |
-| `config/models.yml` | `<agent-dir>/models.yml` | Provider/model tùy chỉnh (hiện rỗng) |
+| `config/models.yml` | `<agent-dir>/models.yml` | Override tên model hiển thị thành `provider/id` |
 | `config/mcp.json` | `<agent-dir>/mcp.json` | MCP servers (hiện rỗng) |
 | `extensions/*.ts` | `<agent-dir>/extensions/` | `omniroute`, `rtk`, `herdr` |
 | `extensions/cli-anything/` | `<agent-dir>/extensions/cli-anything/` | CLI-Anything plugin + assets |
@@ -66,7 +66,7 @@ Không có trong repo: session, history, credential, database (`agent.db`, `mode
 
 ## Bảo mật
 
-- `config/models.yml` hiện không chứa provider hay key nào.
+- `config/models.yml` không chứa API key; chỉ chứa override tên model.
 - Credential do omp quản lý trong agent dir/keychain, không nằm trong repo này.
 - Trước khi push, kiểm tra `git diff` nếu vừa sửa file cấu hình.
 
@@ -90,5 +90,6 @@ Mặc định là static scan (`--no-llm`). Finding có thể false positive v�
 ## Ghi chú
 
 - Không hard-code đường dẫn tuyệt đối hay home directory; các entry trong `config.yml` dùng `~`, extension top-level tự được auto-discovery.
+- `config/models.yml` chỉ override tên của model đang có trong catalog; model mới thêm sau này sẽ hiện tên gốc cho tới khi bổ sung override.
 - `extensions/herdr-omp-agent-state.ts` chỉ hoạt động khi chạy trong herdr; không dùng herdr thì bỏ qua được.
 - Cần `curl` và `tar` trên macOS/Linux; PowerShell trên Windows.
