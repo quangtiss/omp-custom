@@ -24,7 +24,18 @@ cd omp-custom
 ./install.sh          # Windows: .\install.ps1
 ```
 
-Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc `install.ps1`) nếu máy chưa có, rồi chép cấu hình, extension, skill vào `${OMP_AGENT_DIR:-${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}}` và plugin vào `~/.omp/sources`. File cũ được sao lưu vào `<agent-dir>/backups/<timestamp>/` trước khi ghi đè.
+Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc `install.ps1`) nếu máy chưa có, rồi chép cấu hình, extension, skill vào `${OMP_AGENT_DIR:-${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}}`. File cũ được sao lưu vào `<agent-dir>/backups/<timestamp>/` trước khi ghi đè.
+
+### Yêu cầu theo hệ điều hành
+
+| Hệ điều hành | Script | Cần có sẵn |
+|---|---|---|
+| macOS | `install.sh` | `curl` hoặc `wget`, `tar` (có sẵn) |
+| Linux | `install.sh` | `curl` hoặc `wget`, `tar`; Alpine: `apk add libstdc++ libgcc` (binary omp cần) |
+| WSL | `install.sh` | như Linux |
+| Windows | `install.ps1` (PowerShell 5.1+) | không cần gì thêm; dùng `winget` nếu có để cài `rtk` |
+
+`install.sh` từ chối chạy trong Git Bash/MSYS2/Cygwin và chỉ sang `install.ps1`. Không có đường dẫn tuyệt đối hay `~` nào trong cấu hình, nên cùng một bộ file dùng được cho cả ba hệ.
 
 ## Sau khi cài
 
@@ -41,7 +52,7 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 |---|---|---|---|---|
 | `rtk.ts` | extension | [rtk-ai/rtk](https://github.com/rtk-ai/rtk) | Viết lại lệnh bash sang `rtk` để giảm token | `rtk` ≥ 0.23.0 trong PATH — script tự cài qua brew/winget |
 | `cli-anything/` | extension | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Slash command `/cli-anything` xây CLI harness cho app GUI | — |
-| `sources/ponytail/` | extension + skill | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode, `/ponytail*` | — |
+| `extensions/ponytail/` | extension + skill | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode, `/ponytail*` | — |
 | `skills/graphify/` | skill | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | `/graphify` dựng knowledge graph từ code/docs | CLI `graphifyy` — script tự cài qua uv |
 | `skillspector` | CLI (ngoài repo) | [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector) | Quét bảo mật skill/extension trước khi cài hoặc sau khi nâng cấp | `uv tool install git+https://github.com/NVIDIA/SkillSpector.git` |
 | `omniroute.ts` | extension | nội bộ | Provider model qua omniroute local (`127.0.0.1:20128`) | OmniRoute đang chạy |
@@ -59,7 +70,7 @@ Phiên bản/commit đã pin: xem [VERSIONS.md](VERSIONS.md). Đây là bản ve
 | `extensions/*.ts` | `<agent-dir>/extensions/` | `omniroute`, `rtk`, `herdr` |
 | `extensions/cli-anything/` | `<agent-dir>/extensions/cli-anything/` | CLI-Anything plugin + assets |
 | `skills/graphify/` | `<agent-dir>/skills/graphify/` | Graphify skill |
-| `sources/ponytail/` | `~/.omp/sources/ponytail/` | Ponytail plugin + skill (bản rút gọn) |
+| `extensions/ponytail/` | `<agent-dir>/extensions/ponytail/` | Ponytail plugin + skill (bản rút gọn) |
 | `themes/dark-github-user-highlight-custom.json` | `<agent-dir>/themes/` | Theme tùy chỉnh |
 | `install.sh` / `install.ps1` | — | Cài omp + toàn bộ cấu hình trên macOS/Linux và Windows |
 
@@ -100,7 +111,7 @@ Baseline đo trên máy này (2026-11-23, omp 19.1.1): rtk 267 lệnh, tiết ki
 uv tool install git+https://github.com/NVIDIA/SkillSpector.git
 skillspector scan extensions/cli-anything --no-llm
 skillspector scan skills/graphify --no-llm
-skillspector scan sources/ponytail --no-llm
+skillspector scan extensions/ponytail --no-llm
 ```
 
 Mặc định là static scan (`--no-llm`). Finding có thể false positive với skill chứa instruction cho agent; đọc kỹ trước khi kết luận. Quét lại sau mỗi lần nâng cấp asset từ upstream.
@@ -113,7 +124,7 @@ Mặc định là static scan (`--no-llm`). Finding có thể false positive v�
 
 ## Ghi chú
 
-- Không hard-code đường dẫn tuyệt đối hay home directory; các entry trong `config.yml` dùng `~`, extension top-level tự được auto-discovery.
+- Không hard-code đường dẫn tuyệt đối hay home directory: mọi extension nằm trong `<agent-dir>/extensions` và tự được auto-discovery, nên `config.yml` không có entry đường dẫn nào (chạy được trên mọi OS).
 - `config/models.yml` chỉ override tên của model đang có trong catalog; model mới thêm sau này sẽ hiện tên gốc cho tới khi bổ sung override.
 - `extensions/herdr-omp-agent-state.ts` chỉ hoạt động khi chạy trong herdr; không dùng herdr thì bỏ qua được.
-- Cần `curl` và `tar` trên macOS/Linux; PowerShell trên Windows.
+- `install.sh` chỉ dùng POSIX sh + lệnh chuẩn (không cần bash/zsh/brew); `models.yml` chỉ override tên hiển thị nên không phụ thuộc OS.
