@@ -53,8 +53,13 @@ fi
 if [ -z "$REPO_DIR" ]; then
   echo "Đang tải omp-custom ($REF)..."
   CLEANUP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/omp-custom.XXXXXX")"
-  fetch "$TARBALL" | tar -xz -C "$CLEANUP_DIR" --strip-components=1
-  REPO_DIR="$CLEANUP_DIR"
+  fetch "$TARBALL" | tar -xz -C "$CLEANUP_DIR"
+  # GitHub tarball bọc trong một thư mục; tìm nó thay vì dựa vào --strip-components (busybox tar không có).
+  REPO_DIR="$(find "$CLEANUP_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+  if [ -z "$REPO_DIR" ]; then
+    echo "Giải nén thất bại." >&2
+    exit 1
+  fi
 fi
 
 # 2. Cài omp nếu máy chưa có.
