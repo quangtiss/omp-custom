@@ -9,7 +9,6 @@ $Ref = "main"
 $AgentDir = if ($env:OMP_AGENT_DIR) { $env:OMP_AGENT_DIR }
             elseif ($env:PI_CODING_AGENT_DIR) { $env:PI_CODING_AGENT_DIR }
             else { Join-Path $HOME ".omp/agent" }
-$SourcesDir = Join-Path $HOME ".omp/sources"
 
 $DownloadedDir = $null
 function Get-RepoDir {
@@ -78,7 +77,6 @@ try {
     }
 
     Install-Tree (Join-Path $RepoDir "skills") (Join-Path $AgentDir "skills") "skills"
-    Install-Tree (Join-Path $RepoDir "sources/ponytail") (Join-Path $SourcesDir "ponytail") "sources/ponytail"
 
     Get-ChildItem -Path (Join-Path $RepoDir "themes") -Filter *.json | ForEach-Object {
         $rel = "themes/" + $_.Name

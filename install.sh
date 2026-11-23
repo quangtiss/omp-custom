@@ -10,10 +10,23 @@ TARBALL="https://codeload.github.com/$REPO_SLUG/tar.gz/refs/heads/$REF"
 
 case "$(uname -s 2>/dev/null || echo unknown)" in
   MINGW*|MSYS*|CYGWIN*)
-    echo "Windows: chạy install.ps1 trong PowerShell thay vì install.sh."
+    echo "Windows: dùng PowerShell thay vì sh:"
+    echo "  irm https://raw.githubusercontent.com/quangtiss/omp-custom/main/install.ps1 | iex"
     exit 1
     ;;
 esac
+
+# curl hoặc wget; một số distro tối giản chỉ có một trong hai.
+fetch() {
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$1"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO- "$1"
+  else
+    echo "Cần curl hoặc wget để tải xuống." >&2
+    return 1
+  fi
+}
 
 CLEANUP_DIR=""
 cleanup() {
@@ -40,14 +53,14 @@ fi
 if [ -z "$REPO_DIR" ]; then
   echo "Đang tải omp-custom ($REF)..."
   CLEANUP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/omp-custom.XXXXXX")"
-  curl -fsSL "$TARBALL" | tar -xz -C "$CLEANUP_DIR" --strip-components=1
+  fetch "$TARBALL" | tar -xz -C "$CLEANUP_DIR" --strip-components=1
   REPO_DIR="$CLEANUP_DIR"
 fi
 
 # 2. Cài omp nếu máy chưa có.
 if ! command -v omp >/dev/null 2>&1; then
   echo "Chưa có omp, đang cài từ https://omp.sh/install ..."
-  curl -fsSL https://omp.sh/install | sh
+  fetch https://omp.sh/install | sh
   PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
   export PATH
 fi
@@ -60,7 +73,6 @@ fi
 
 # 3. Chép cấu hình vào agent dir.
 AGENT_DIR="${OMP_AGENT_DIR:-${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}}"
-SOURCES_DIR="$HOME/.omp/sources"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$AGENT_DIR/backups/$STAMP"
 
@@ -108,10 +120,6 @@ if [ -d "$REPO_DIR/skills" ]; then
   install_tree "$REPO_DIR/skills" "$AGENT_DIR/skills" skills
 fi
 
-if [ -d "$REPO_DIR/sources/ponytail" ]; then
-  install_tree "$REPO_DIR/sources/ponytail" "$SOURCES_DIR/ponytail" sources/ponytail
-fi
-
 for f in "$REPO_DIR"/themes/*.json; do
   [ -e "$f" ] && install_file "$f" "$AGENT_DIR/themes/$(basename "$f")" "themes/$(basename "$f")"
 done
@@ -128,7 +136,12 @@ if [ -z "${OMP_CUSTOM_SKIP_DEPS:-}" ]; then
     echo "rtk: đã có ($(rtk --version 2>/dev/null | head -1))"
   elif command -v brew >/dev/null 2>&1; then
     echo "Đang cài rtk (rewrite lệnh để tiết kiệm token)..."
-    brew install rtk || echo "Cài rtk thất bại — cài tay: https://github.com/rtk-ai/rtk"
+    if brew install rtk; then
+      command -v rtk >/dev/null 2>&1 || \
+        echo "Đã cài rtk nhưng lệnh chưa có trong PATH — thêm '$(brew --prefix)/bin' vào PATH rồi mở terminal mới."
+    else
+      echo "Cài rtk thất bại — cài tay: https://github.com/rtk-ai/rtk"
+    fi
   else
     echo "Thiếu rtk: cài bằng 'brew install rtk' hoặc https://github.com/rtk-ai/rtk"
   fi
