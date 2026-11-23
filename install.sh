@@ -122,4 +122,25 @@ if [ -d "$BACKUP_DIR" ]; then
   echo "Bản cũ đã sao lưu tại: $BACKUP_DIR"
 fi
 
+# 4. CLI phụ thuộc. Bỏ qua bằng OMP_CUSTOM_SKIP_DEPS=1.
+if [ -z "${OMP_CUSTOM_SKIP_DEPS:-}" ]; then
+  if command -v rtk >/dev/null 2>&1; then
+    echo "rtk: đã có ($(rtk --version 2>/dev/null | head -1))"
+  elif command -v brew >/dev/null 2>&1; then
+    echo "Đang cài rtk (rewrite lệnh để tiết kiệm token)..."
+    brew install rtk || echo "Cài rtk thất bại — cài tay: https://github.com/rtk-ai/rtk"
+  else
+    echo "Thiếu rtk: cài bằng 'brew install rtk' hoặc https://github.com/rtk-ai/rtk"
+  fi
+
+  if command -v graphify >/dev/null 2>&1; then
+    echo "graphifyy: đã có"
+  elif command -v uv >/dev/null 2>&1; then
+    echo "Đang cài graphifyy (skill /graphify)..."
+    uv tool install graphifyy || echo "Cài graphifyy thất bại — chạy tay: uv tool install graphifyy"
+  else
+    echo "Thiếu graphifyy: cài bằng 'uv tool install graphifyy' (https://docs.astral.sh/uv/)"
+  fi
+fi
+
 echo "Xong. Chạy 'omp' để kiểm tra."

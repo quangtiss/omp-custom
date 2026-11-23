@@ -89,6 +89,27 @@ try {
         Write-Host "Previous files backed up to: $BackupDir"
     }
 
+    if (-not $env:OMP_CUSTOM_SKIP_DEPS) {
+        if (Get-Command rtk -ErrorAction SilentlyContinue) {
+            Write-Host "rtk: already installed"
+        } elseif (Get-Command winget -ErrorAction SilentlyContinue) {
+            Write-Host "Installing rtk (command rewriting for token savings)..."
+            winget install --id rtk-ai.rtk --accept-source-agreements --accept-package-agreements --silent
+            $env:Path = "$env:LOCALAPPDATA\Microsoft\WinGet\Links;$env:Path"
+        } else {
+            Write-Host "rtk missing: install https://github.com/rtk-ai/rtk (winget install rtk-ai.rtk)"
+        }
+
+        if (Get-Command graphify -ErrorAction SilentlyContinue) {
+            Write-Host "graphifyy: already installed"
+        } elseif (Get-Command uv -ErrorAction SilentlyContinue) {
+            Write-Host "Installing graphifyy (for /graphify)..."
+            uv tool install graphifyy
+        } else {
+            Write-Host "graphifyy missing: install uv, then 'uv tool install graphifyy'"
+        }
+    }
+
     Write-Host "Done. Run 'omp' to verify."
 }
 finally {

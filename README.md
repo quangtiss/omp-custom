@@ -31,7 +31,7 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 1. Khôi phục đăng nhập provider (không nằm trong repo). Chọn một cách:
    - Máy cũ: `omp auth export > omp-credentials.json` (giữ file bí mật, đừng commit), máy mới: `omp auth import omp-credentials.json`.
    - Hoặc đăng nhập lại trong omp; riêng `omniroute` sẽ hỏi API key khi login.
-2. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`. Tùy chọn cài `skillspector` để quét bảo mật.
+2. CLI phụ thuộc được cài tự động khi có sẵn trình quản lý gói: `rtk` qua `brew` (macOS/Linux) hoặc `winget` (Windows), `graphifyy` qua `uv`. Nếu máy thiếu `brew`/`winget`/`uv`, script in hướng dẫn cài tay. Bỏ qua bước này bằng `OMP_CUSTOM_SKIP_DEPS=1`. Tùy chọn cài `skillspector` để quét bảo mật.
 3. Tùy chọn: `omp tiny-models download lfm2.5-230m` (~214 MB) để `title.generator: tiny` sinh tiêu đề session bằng model local thay vì im lặng bỏ qua.
 4. Chạy `omp`.
 
@@ -39,10 +39,10 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 
 | Thành phần | Loại | Upstream | Tác dụng | Cần cài ngoài |
 |---|---|---|---|---|
-| `rtk.ts` | extension | [rtk-ai/rtk](https://github.com/rtk-ai/rtk) | Viết lại lệnh bash sang `rtk` để giảm token | `rtk` ≥ 0.23.0 trong PATH (`brew install rtk`) |
+| `rtk.ts` | extension | [rtk-ai/rtk](https://github.com/rtk-ai/rtk) | Viết lại lệnh bash sang `rtk` để giảm token | `rtk` ≥ 0.23.0 trong PATH — script tự cài qua brew/winget |
 | `cli-anything/` | extension | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Slash command `/cli-anything` xây CLI harness cho app GUI | — |
 | `sources/ponytail/` | extension + skill | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode, `/ponytail*` | — |
-| `skills/graphify/` | skill | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | `/graphify` dựng knowledge graph từ code/docs | CLI `graphifyy` (`uv tool install graphifyy`) |
+| `skills/graphify/` | skill | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | `/graphify` dựng knowledge graph từ code/docs | CLI `graphifyy` — script tự cài qua uv |
 | `skillspector` | CLI (ngoài repo) | [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector) | Quét bảo mật skill/extension trước khi cài hoặc sau khi nâng cấp | `uv tool install git+https://github.com/NVIDIA/SkillSpector.git` |
 | `omniroute.ts` | extension | nội bộ | Provider model qua omniroute local (`127.0.0.1:20128`) | OmniRoute đang chạy |
 | `herdr-omp-agent-state.ts` | extension | herdr sinh tự động | Báo trạng thái agent cho herdr | herdr |
