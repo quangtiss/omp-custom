@@ -32,7 +32,8 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
    - Máy cũ: `omp auth export > omp-credentials.json` (giữ file bí mật, đừng commit), máy mới: `omp auth import omp-credentials.json`.
    - Hoặc đăng nhập lại trong omp; riêng `omniroute` sẽ hỏi API key khi login.
 2. Cài CLI mà một số extension cần (xem bảng bên dưới): `rtk`, `graphifyy`. Tùy chọn cài `skillspector` để quét bảo mật.
-3. Chạy `omp`.
+3. Tùy chọn: `omp tiny-models download lfm2.5-230m` (~214 MB) để `title.generator: tiny` sinh tiêu đề session bằng model local thay vì im lặng bỏ qua.
+4. Chạy `omp`.
 
 ## Extension, skill & công cụ
 
@@ -63,6 +64,29 @@ Phiên bản/commit đã pin: xem [VERSIONS.md](VERSIONS.md). Đây là bản ve
 | `install.sh` / `install.ps1` | — | Cài omp + toàn bộ cấu hình trên macOS/Linux và Windows |
 
 Không có trong repo: session, history, credential, database (`agent.db`, `models.db`, ...) và API key thật.
+
+## Tiết kiệm token (đang bật)
+
+| Cơ chế | Ở đâu | Ghi chú |
+|---|---|---|
+| Shell output minimizer | core omp (mặc định) | Nén output bash; dấu `Σ <bytes>` trong kết quả là dấu hiệu đang chạy |
+| Rewrite lệnh sang `rtk` | `extensions/rtk.ts` | `git status`, `ls`, `grep`, `cat→read`, `find`, `diff`, `test`, `log`… |
+| `read.summarize` | core (mặc định) | Gấp thân hàm/comment khi file ≥ 100 dòng |
+| Prompt cache | provider | Giữ nguyên prefix system prompt giữa các lượt |
+| Model rẻ cho việc phụ | `modelRoles.task` / `smol` | Subagent, tiêu đề, việc nhỏ chạy model flash |
+| `title.generator: tiny` | `config.yml` | Chỉ chạy khi đã tải tiny model local |
+| Status line có token/cost | `config.yml` | `token_total`, `cost`, `context_pct` để thấy chi phí ngay |
+
+Đo lại bất cứ lúc nào:
+
+```sh
+rtk gain        # số lệnh đã rewrite + % token tiết kiệm
+omp stats       # dashboard token/cache/cost theo model
+```
+
+Baseline đo trên máy này (2026-11-23, omp 19.1.1): rtk 267 lệnh, tiết kiệm 40.6K token (58.2%); `omp stats` 477 request, cache hit 94.2%, tổng cost $0.046. Số này chỉ để tham chiếu, không phải cam kết.
+
+`bashInterceptor.enabled` để tắt: rtk đã rewrite lệnh, bật thêm sẽ chặn hẳn `cat`/`grep`/`find` thành tool native và làm mất các cờ lệnh người dùng gõ.
 
 ## Bảo mật
 
