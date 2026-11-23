@@ -10,10 +10,6 @@ computer:
   display: active
   maxWidth: 3840
   maxHeight: 2400
-extensions:
-  # omniroute.ts, rtk.ts, herdr-*, cli-anything/ live in <agent-dir>/extensions
-  # and are auto-discovered; only sources outside that dir need an entry here.
-  - ~/.omp/sources/ponytail
 modelRoles:
   default: deepinfra/deepseek-ai/DeepSeek-V4.1-Flash-1017
   task: omniroute/qwen-cld/deepseek-v4.1-flash-1017
