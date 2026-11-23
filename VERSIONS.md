@@ -6,12 +6,14 @@
 | graphify | graphifyy 0.9.115 (uv tool) | https://github.com/Graphify-Labs/graphify | `skills/graphify` |
 | ponytail | 5.3.3, commit `ebd8654` | https://github.com/DietrichGebert/ponytail | `sources/ponytail`, load qua entry trong `config.yml` |
 | CLI-Anything | commit `34f5195` | https://github.com/HKUDS/CLI-Anything | `extensions/cli-anything` (copy asset) |
+| skillspector | 2.12.0 (uv tool, CLI only) | https://github.com/NVIDIA/SkillSpector | ngoài repo; dùng `skillspector scan <path> --no-llm` |
 
 Quy trình cập nhật:
 
 ```sh
 brew upgrade rtk
 uv tool upgrade graphifyy
+uv tool upgrade skillspector
 git -C ~/.omp/sources/ponytail pull
 git -C ~/.omp/sources/CLI-Anything pull
 ```
