@@ -21,6 +21,8 @@ swiftc -O tools/mac/vn-type.swift -o ~/.local/bin/vn-type
 swiftc -O tools/mac/ocr.swift    -o ~/.local/bin/ocr
 ```
 
+**Permission, first run only.** `vn-type` posts events through `CGEvent`, so the app hosting `omp` (Terminal, iTerm, VS Code) needs *System Settings → Privacy & Security → Accessibility*. Without it macOS drops the events silently while the command still looks successful. Capturing a screenshot before `ocr` needs *Screen Recording* for the same app; `ocr` itself reads a file and needs no permission.
+
 ## vn-type — visible typing
 
 ```sh
@@ -38,7 +40,7 @@ vn-type 40 "Sản phẩm"
 2. the window is the focused window of a frontmost app.
 
 ```sh
-agent-desktop get "<ref>" --property states     # must contain "focused"   (if agent-desktop is installed)
+# read the element's states with the agent's own computer/AX tool; it must contain "focused"
 ```
 
 Without check 2 the text lands in the address bar or another app. Symptom: the window title becomes the text you sent.

@@ -1,4 +1,4 @@
-# Phiên bản đã pin (2026-11-23)
+# Phiên bản đã pin (cập nhật 2026-11-27)
 
 | Thành phần | Phiên bản / commit | Upstream | Cài vào |
 |---|---|---|---|
@@ -7,6 +7,7 @@
 | ponytail | 5.3.3, commit `ebd8654` | https://github.com/DietrichGebert/ponytail | `extensions/ponytail` (auto-discovery) |
 | CLI-Anything | commit `34f5195` | https://github.com/HKUDS/CLI-Anything | `extensions/cli-anything` (copy asset) |
 | skillspector | 2.12.0 (uv tool, CLI only) | https://github.com/NVIDIA/SkillSpector | ngoài repo; dùng `skillspector scan <path> --no-llm` |
+| desktop-input | nội bộ, build bằng `swiftc` | — | `skills/desktop-input` + `tools/mac/*.swift` → `~/.local/bin/{vn-type,ocr}` (macOS) |
 
 Quy trình cập nhật:
 
