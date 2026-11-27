@@ -2,11 +2,18 @@ import Foundation
 import Vision
 import AppKit
 
+guard CommandLine.arguments.count >= 2 else {
+    FileHandle.standardError.write("usage: ocr <image-path>\n".data(using: .utf8)!)
+    exit(2)
+}
 let path = CommandLine.arguments[1]
 guard let img = NSImage(contentsOfFile: path),
       let tiff = img.tiffRepresentation,
       let bmp = NSBitmapImageRep(data: tiff),
-      let cg = bmp.cgImage else { exit(2) }
+      let cg = bmp.cgImage else {
+    FileHandle.standardError.write("cannot read image: \(path)\n".data(using: .utf8)!)
+    exit(2)
+}
 
 let req = VNRecognizeTextRequest { r, _ in
     guard let obs = r.results as? [VNRecognizedTextObservation] else { return }

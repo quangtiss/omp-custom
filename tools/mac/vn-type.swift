@@ -3,11 +3,12 @@
 import Cocoa
 
 let args = CommandLine.arguments
-guard args.count >= 3, let delayMs = Double(args[1]) else {
+guard args.count >= 3, let intervalMs = Double(args[1]) else {
     FileHandle.standardError.write("usage: vn-type <interval_ms> <text>\n".data(using: .utf8)!)
     exit(2)
 }
 let text = Array(args[2])
+let delayMs = max(0, intervalMs)
 let src = CGEventSource(stateID: .hidSystemState)
 
 for (i, ch) in text.enumerated() {
