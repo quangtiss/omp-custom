@@ -54,6 +54,7 @@ Script tự cài omp từ nguồn chính thức (`https://omp.sh/install` hoặc
 | `cli-anything/` | extension | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Slash command `/cli-anything` xây CLI harness cho app GUI | — |
 | `extensions/ponytail/` | extension + skill | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode, `/ponytail*` | — |
 | `skills/graphify/` | skill | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | `/graphify` dựng knowledge graph từ code/docs | CLI `graphifyy` — script tự cài qua uv |
+| `skills/desktop-input/` | skill + CLI | nội bộ | `vn-type` gõ từng phím (tiếng Việt được), `ocr` đọc toạ độ chữ trên màn hình cho app canvas | macOS + Xcode CLT — `install.sh` tự build |
 | `skillspector` | CLI (ngoài repo) | [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector) | Quét bảo mật skill/extension trước khi cài hoặc sau khi nâng cấp | `uv tool install git+https://github.com/NVIDIA/SkillSpector.git` |
 | `omniroute.ts` | extension | nội bộ | Provider model qua omniroute local (`127.0.0.1:20128`) | OmniRoute đang chạy |
 | `herdr-omp-agent-state.ts` | extension | herdr sinh tự động | Báo trạng thái agent cho herdr | herdr |
@@ -70,6 +71,8 @@ Phiên bản/commit đã pin: xem [VERSIONS.md](VERSIONS.md). Đây là bản ve
 | `extensions/*.ts` | `<agent-dir>/extensions/` | `omniroute`, `rtk`, `herdr` |
 | `extensions/cli-anything/` | `<agent-dir>/extensions/cli-anything/` | CLI-Anything plugin + assets |
 | `skills/graphify/` | `<agent-dir>/skills/graphify/` | Graphify skill |
+| `skills/desktop-input/` | `<agent-dir>/skills/desktop-input/` | Skill gõ từng phím + OCR toạ độ (macOS) |
+| `tools/mac/*.swift` | `~/.local/bin/{vn-type,ocr}` | Nguồn 2 CLI, `install.sh` build bằng `swiftc` |
 | `extensions/ponytail/` | `<agent-dir>/extensions/ponytail/` | Ponytail plugin + skill (bản rút gọn) |
 | `themes/dark-github-user-highlight-custom.json` | `<agent-dir>/themes/` | Theme tùy chỉnh |
 | `install.sh` / `install.ps1` | — | Cài omp + toàn bộ cấu hình trên macOS/Linux và Windows |

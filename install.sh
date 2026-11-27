@@ -164,6 +164,27 @@ if [ -z "${OMP_CUSTOM_SKIP_DEPS:-}" ]; then
   else
     echo "Thiếu graphifyy: cài bằng 'uv tool install graphifyy' (https://docs.astral.sh/uv/)"
   fi
+
+  # desktop-input: chỉ macOS, vì CGEvent và Vision không có trên Linux/Windows.
+  if [ "$(uname -s 2>/dev/null)" = "Darwin" ] && [ -d "$REPO_DIR/tools/mac" ]; then
+    if command -v swiftc >/dev/null 2>&1; then
+      BIN_DIR="$HOME/.local/bin"
+      mkdir -p "$BIN_DIR"
+      for tool in vn-type ocr; do
+        if [ ! -x "$BIN_DIR/$tool" ] || [ "$REPO_DIR/tools/mac/$tool.swift" -nt "$BIN_DIR/$tool" ]; then
+          if swiftc -O "$REPO_DIR/tools/mac/$tool.swift" -o "$BIN_DIR/$tool" 2>/dev/null; then
+            echo "built:     $tool"
+          else
+            echo "Build $tool thất bại — cần Xcode Command Line Tools: xcode-select --install"
+          fi
+        else
+          echo "$tool: đã có"
+        fi
+      done
+    else
+      echo "Thiếu swiftc (Xcode Command Line Tools) — bỏ qua vn-type và ocr."
+    fi
+  fi
 fi
 
 echo "Xong. Chạy 'omp' để kiểm tra."
